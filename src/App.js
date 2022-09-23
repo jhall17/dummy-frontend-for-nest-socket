@@ -1,22 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { useMemo } from "react";
+import "./App.css";
 
 function App() {
+  const websocket = useMemo(() => {
+    return new WebSocket("ws://172.16.1.80:3000");
+  }, []);
+
+  const subscribe = async () => {
+    websocket.send(
+      JSON.stringify({
+        event: "subscribe",
+        data: "/assets",
+      })
+    );
+    websocket.onmessage = (event) => {
+      console.log(event.data);
+    };
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <button onClick={subscribe}>subscribe</button>
       </header>
     </div>
   );
